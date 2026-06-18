@@ -4,7 +4,7 @@ export interface IUser {
   username: string
   password: string
   admin: boolean
-  refreshToken: string
+  
 }
 
 const userSchema = new Schema<IUser>({
@@ -20,9 +20,7 @@ const userSchema = new Schema<IUser>({
     type: Boolean,
     default: false
   },
-  refreshToken: {
-    type: String
-  }
+  
 })
 
 export default model<IUser>('User', userSchema)

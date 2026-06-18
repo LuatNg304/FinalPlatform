@@ -3,6 +3,10 @@ import questionSchema from '~/models/schemas/question.schema'
 
 export const createQuestion = async (req: Request, res: Response) => {
   try {
+    const { decoded_authenrization } = req
+    
+    const author = decoded_authenrization?.userId
+
     const { text, options, keywords, correctAnswerIndex } = req.body
 
     if (correctAnswerIndex < 0 || correctAnswerIndex >= options.length) {
@@ -10,15 +14,18 @@ export const createQuestion = async (req: Request, res: Response) => {
         message: 'correctAnswerIndex is invalid'
       })
     }
+
     const question = await questionSchema.create({
       text,
       options,
       keywords,
-      correctAnswerIndex
+      correctAnswerIndex,
+      author
     })
-    res.status(201).json(question)
+
+    return res.status(201).json(question)
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Create question failed',
       error
     })
@@ -89,7 +96,7 @@ export const updateQuestionById = async (req: Request, res: Response) => {
       { new: true }
     )
     if (!question) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: 'Question not found'
       })
     }
